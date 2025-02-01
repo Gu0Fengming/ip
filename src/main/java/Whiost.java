@@ -4,10 +4,17 @@ public class Whiost {
         String greeting = "Hello! I'm Whiost\nWhat can I do for you?\n";
         System.out.println(greeting);
 
+        boolean p = true;
         Scanner scanner = new Scanner(System.in);
-        String x = scanner.nextLine();
-        if (x.equals("exit")) {
-            System.out.println("Bye. Hope to see you again soon!\n");
+        while (p) {
+            String inp = scanner.nextLine();
+            if (inp.equals("bye")) {
+                p = false;
+                System.out.println("Bye. Hope to see you again soon!\n");
+            } else {
+                System.out.println(inp);
+            }
         }
+
     }
 }
