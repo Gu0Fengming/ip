@@ -1,5 +1,6 @@
-import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Whiost {
     public static void main(String[] args) {
@@ -9,6 +10,10 @@ public class Whiost {
         String unmarked = "OK, I've marked this task as not done yet:";
         String reportTask1 = "Now you have ";
         String reportTask2 = " tasks in the list.";
+
+        String error0 = "OOPS!!! I'm sorry, but I don't know what that means.";
+        String errorEmpty = "OOPS!!! The description cannot be empty.";
+        String errorNotFound = "OOPS!!! The task you select doesn't exist.";
 
         System.out.print(greeting);
 
@@ -20,7 +25,10 @@ public class Whiost {
 
         while (p) {
             String inp = scanner.nextLine();
-            if (inp.equals("bye")) {
+            if (inp.equals("todo") || inp.equals("todo ") || inp.equals("deadline") || inp.equals("deadline ") || inp.equals("event") || inp.equals("event ") || inp.equals("mark") || inp.equals("mark ") || inp.equals("unmark") || inp.equals("unmark ")) {
+                System.out.println(errorEmpty);
+                continue;
+            } else if (inp.equals("bye")) {
                 p = false;
                 System.out.println("Bye. Hope to see you again soon!\n");
             } else if (inp.equals("list")) {
@@ -52,16 +60,27 @@ public class Whiost {
                 System.out.println("  [E][ ] " + inp.substring(6, pos1) + "(from:" + inp.substring(pos1 + 5, pos2) + " to:" + inp.substring(pos2 + 4) + ")");
                 System.out.println(reportTask1 + lst.size() + reportTask2);
             } else if (inp.startsWith("mark ")) {
-                System.out.println(marked);
                 int pos = Integer.parseInt(inp.substring(5)) - 1;
+                if (pos >= lst.size()) {
+                    System.out.println(errorNotFound);
+                    continue;
+                }
+                System.out.println(marked);
                 markLst.set(pos, "[X]");
                 System.out.println("  " + typeLst.get(pos) + markLst.get(pos) + " " + lst.get(pos));
             } else if (inp.startsWith("unmark ")) {
-                System.out.println(unmarked);
                 int pos = Integer.parseInt(inp.substring(7)) - 1;
+                if (pos >= lst.size()) {
+                    System.out.println(errorNotFound);
+                    continue;
+                }
+                System.out.println(unmarked);
                 markLst.set(pos, "[ ]");
                 System.out.println("  " + typeLst.get(pos) + markLst.get(pos) + " " + lst.get(pos));
+            } else {
+                System.out.println(error0);
             }
         }
     }
 }
+
