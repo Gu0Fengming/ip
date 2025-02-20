@@ -15,8 +15,8 @@ public class InputCommand {
     public String endTime;
 
     public InputCommand(String inp) {
-        this.response = new int[10];
-        for (int i = 0; i < 10; i++) {
+        this.response = new int[11];
+        for (int i = 0; i < 11; i++) {
             this.response[i] = 0;
         }
         if (inp.length() >= 5 && inp.substring(0, 5).equals("todo ")) {             //3
@@ -104,8 +104,19 @@ public class InputCommand {
                 this.target = Integer.parseInt(String.valueOf(inp.charAt(7))) - 1;
                 this.response[8] = 1;
             }
-        } else {                              //9
-            this.response[9] = 1;
+        } else if (inp.length() >= 5 && inp.substring(0, 5).equals("find ")){           //9
+            String check = "";
+            for (int i = 0; i < inp.length() - 5; i++) {
+                check += " ";
+            }
+            if (inp.equals("find " + check)) {
+                this.response[0] = 1;
+            } else {
+                this.name = inp.substring(5);
+                this.response[9] = 1;
+            }
+        } else {                              //10
+            this.response[10] = 1;
         }
     }
 }
