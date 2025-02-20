@@ -13,16 +13,15 @@ public class Task {
         int state = 0;
         for (int i = 0; i < this.initLst.size(); i++) {
             String line = this.initLst.get(i);
-            String trimmed = (line.length() > 0 ? line.substring(0, line.length() - 1) : line);
             if (state == 0) {
                 state = 1;
-                this.typeLst.add(trimmed);
+                this.typeLst.add(line);
             } else if (state == 1) {
                 state = 2;
-                this.markLst.add(trimmed);
+                this.markLst.add(line);
             } else {
                 state = 0;
-                this.lst.add(trimmed);
+                this.lst.add(line);
             }
         }
     }

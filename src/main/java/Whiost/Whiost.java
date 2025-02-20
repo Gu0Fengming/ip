@@ -41,6 +41,7 @@ public class Whiost {
             } else if (num == 1) { // exit
                 operate = false;
                 System.out.println("Bye. Hope to see you again soon!\n");
+                System.out.println(this.task.lst);
                 this.storage.save(this.task);
             } else if (num == 2) { // list
                 if (this.task.lst.size() == 0) {
@@ -122,6 +123,6 @@ public class Whiost {
     }
 
     public static void main(String[] args) {
-        new Whiost("./data/whiost.txt").run();
+        new Whiost("./src/data/whiost.txt").run();
     }
 }
