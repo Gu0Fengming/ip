@@ -18,6 +18,8 @@ public class WhiostError {
             System.out.println("OOPS!!! The task you select doesn't exist.");
         } else if (num == 3) {
             System.out.println("OOPS!!! There's no task.");
+        } else if (num == 4) {
+            System.out.println("OOPS!!! There's no task matching.");
         } else {
             System.out.println("No Such Error");
         }

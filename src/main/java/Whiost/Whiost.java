@@ -1,5 +1,7 @@
 package Whiost;
 
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 import Whiost.Ui.*;
 import Whiost.Task.*;
@@ -51,7 +53,6 @@ public class Whiost {
             } else if (num == 1) { // exit
                 operate = false;
                 System.out.println("Bye. Hope to see you again soon!\n");
-                System.out.println(this.task.lst);
                 this.storage.save(this.task);
             } else if (num == 2) { // list
                 if (this.task.lst.size() == 0) {
@@ -125,6 +126,27 @@ public class Whiost {
                 this.task.typeLst.remove(pos);
                 System.out.println(this.ui.reportTask1 + this.task.lst.size() + this.ui.reportTask2);
                 this.storage.save(this.task);
+            } else if (num == 9) { //find
+                ArrayList<Integer> finded = new ArrayList<>();
+                for (int i = 0; i < this.task.lst.size(); i++) {
+                    String cur = this.task.lst.get(i);
+                    for (int j = 0; j < cur.length() - inp.name.length() + 1; j++){
+                        if (Objects.equals(inp.name, cur.substring(j, j + inp.name.length()))){
+                            finded.add(i);
+                            break;
+                        }
+                    }
+                }
+                if (finded.size() == 0){
+                    this.error.showError(4);
+                    continue;
+                } else {
+                    System.out.println(this.ui.finded);
+                    for (int i = 0; i < finded.size(); i++) {
+                        System.out.println((i + 1) + "." + this.task.typeLst.get(finded.get(i)) + this.task.markLst.get(finded.get(i)) + " " + this.task.lst.get(finded.get(i)));
+                    }
+                }
+
             } else {
                 this.error.showError(0);
             }

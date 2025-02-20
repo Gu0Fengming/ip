@@ -11,6 +11,8 @@ public class Ui {
     public String reportTask1;
     public String reportTask2;
     public String deleted;
+
+    public String finded;
     public String[] monthTrans;
 
     /**
@@ -24,6 +26,7 @@ public class Ui {
         this.reportTask1 = "Now you have ";
         this.reportTask2 = " tasks in the list.";
         this.deleted = "Noted. I've removed this task:";
+        this.finded = "Here are the matching tasks in your list:";
 
         this.monthTrans = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     }
