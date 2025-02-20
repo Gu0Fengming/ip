@@ -7,13 +7,20 @@ import Whiost.Storage.*;
 import Whiost.InputCommand.*;
 import Whiost.WhiostError.*;
 
-
+/**
+ * Represents the chatbot itself, initialize and run
+ */
 public class Whiost {
     public Ui ui;
     public Storage storage;
     public Task task;
     public WhiostError error;
 
+    /**
+     * Initialize chatbot Ui, Storage, Task and Errors
+     *
+     * @param filePath the filepath of a txt file where the tasks store at
+     */
     public Whiost(String filePath) {
         this.ui = new Ui();
         this.storage = new Storage(filePath);
@@ -21,6 +28,9 @@ public class Whiost {
         this.error = new WhiostError();
     }
 
+    /**
+     * Run the chatbot and Looping until exit
+     */
     public void run() {
         System.out.println(this.ui.greeting);
         boolean operate = true;

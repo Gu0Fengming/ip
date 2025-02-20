@@ -1,5 +1,8 @@
 package Whiost.InputCommand;
 
+/**
+ * Check and handle user input
+ */
 public class InputCommand {
     public int[] response;
     public String name;
@@ -14,6 +17,11 @@ public class InputCommand {
     public String startTime;
     public String endTime;
 
+    /**
+     * Check the user inputs and set response command to main class
+     *
+     * @param inp user input
+     */
     public InputCommand(String inp) {
         this.response = new int[10];
         for (int i = 0; i < 10; i++) {

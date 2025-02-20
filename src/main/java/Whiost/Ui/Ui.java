@@ -1,5 +1,8 @@
 package Whiost.Ui;
 
+/**
+ * Represent Ui of chatbot, all the words says by the bot are preset here
+ */
 public class Ui {
     public String greeting;
     public String addTask;
@@ -10,6 +13,9 @@ public class Ui {
     public String deleted;
     public String[] monthTrans;
 
+    /**
+     * Initializing all the words that could be said by chatbot
+     */
     public Ui() {
         this.greeting = "Hello! I'm Whiost\nWhat can I do for you?\n";
         this.addTask = "Got it. I've added this task:";

@@ -2,12 +2,20 @@ package Whiost.Task;
 
 import java.util.ArrayList;
 
+/**
+ * Represent current tasks created by user
+ */
 public class Task {
     public ArrayList<String> lst = new ArrayList<>();
     public ArrayList<String> typeLst = new ArrayList<>();
     public ArrayList<String> markLst = new ArrayList<>();
     public ArrayList<String> initLst;
 
+    /**
+     * Initializing tasks
+     *
+     * @param initLst provided by load() in Storage, contains tasks stored in txt file
+     */
     public Task(ArrayList<String> initLst) {
         this.initLst = initLst;
         int state = 0;
