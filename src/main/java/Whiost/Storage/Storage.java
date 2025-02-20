@@ -4,13 +4,26 @@ import java.io.*;
 import java.util.ArrayList;
 import Whiost.Task.*;
 
+/**
+ * Represent the function of storage including saving and loading
+ */
 public class Storage {
     public String filePath;
 
+    /**
+     * Set the file path to where the main function indicated
+     *
+     * @param filePath the filepath of a txt file where the tasks store at
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Load the tasks in txt file into initLst
+     *
+     * @return the tasks in txt file without splitting
+     */
     public ArrayList<String> load() {
         ArrayList<String> initLst = new ArrayList<>();
         try {
@@ -28,6 +41,11 @@ public class Storage {
         return initLst;
     }
 
+    /**
+     * Save the current tasks into txt file
+     *
+     * @param task current tasks
+     */
     public void save(Task task) {
         try {
             BufferedWriter data = new BufferedWriter(new FileWriter(this.filePath));
