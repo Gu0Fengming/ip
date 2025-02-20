@@ -38,8 +38,6 @@ public class InputCommand {
                 this.name = inp.substring(5);
                 this.response[3] = 1;
             }
-        } else if (inp.equals("bye")) {                 //1
-            this.response[1] = 1;
         } else if (inp.equals("list")) {                //2
             this.response[2] = 1;
         } else if (inp.length() >= 9 && inp.substring(0, 9).equals("deadline ")) {       //4
