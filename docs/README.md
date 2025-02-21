@@ -1,7 +1,7 @@
 # Whiost Chatbot User Guide
 
 
-![Screenshot of an user using the chatbot.](/docs/Ui.png)
+![Screenshot of an user using the chatbot.](/Ui.png)
 
 Whiost is a chatbot that helps you record your tasks on a smart memo pad. 
 
