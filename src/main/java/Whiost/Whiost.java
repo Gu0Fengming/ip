@@ -31,7 +31,17 @@ public class Whiost {
     }
 
     public String greeting(){
-        return this.ui.greeting;
+        StringBuilder fin = new StringBuilder();
+        fin.append(this.ui.greeting);
+        if (this.task.typeLst.size() != 0) {
+            fin.append(this.ui.remind);
+            for (int i = 0; i < this.task.typeLst.size(); i++){
+                if (Objects.equals(this.task.typeLst.get(i), "[D]")) {
+                    fin.append(this.task.lst.get(i) + "\n");
+                }
+            }
+        }
+        return fin.toString();
     }
 
     /**
