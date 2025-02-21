@@ -38,6 +38,7 @@ public class Whiost {
      * Run the chatbot and Looping until exit
      */
     public String run(String inputLine) {
+            int x = 0;
             InputCommand inp = new InputCommand(inputLine);
             int num = -1;
             for (int i = 0; i < inp.response.length; i++) {
@@ -48,6 +49,10 @@ public class Whiost {
             }
             if (num == 0) { // empty description
                 return this.error.showError(1);
+            } else if (num == 1){
+                x = 1;
+                assert x == 0;
+                return "0";
             } else if (num == 2) { // list
                 if (this.task.lst.size() == 0) {
                     return this.error.showError(3);
