@@ -52,7 +52,7 @@ checkstyle {
 }
 
 shadowJar {
-    archiveBaseName = "whiost"
+    archiveBaseName = "whiostV0.2"
     archiveClassifier = null
 }
 
