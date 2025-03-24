@@ -6,6 +6,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 /**
  * Controller for the main GUI.
  */
@@ -30,9 +32,9 @@ public class MainWindow extends AnchorPane {
     }
 
     /** Injects the Duke instance */
-    public void setDuke(Whiost d) {
-        whiost = d;
-        String greeting = whiost.greeting();
+    public void setWhiost(Whiost whiost) {
+        this.whiost = whiost;
+        String greeting = whiost.getGreeting();
         dialogContainer.getChildren().addAll(
                 DialogBox.getDukeDialog(greeting, dukeImage)
         );
@@ -45,11 +47,16 @@ public class MainWindow extends AnchorPane {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = whiost.run(input);
+        String response = whiost.handleInput(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
                 DialogBox.getDukeDialog(response, dukeImage)
         );
         userInput.clear();
+        if (response.equals(whiost.getUi().getGoodbyeMessage())) {
+            Stage stage = (Stage) dialogContainer.getScene().getWindow();
+            stage.close();
+            Platform.exit();
+        }
     }
 }

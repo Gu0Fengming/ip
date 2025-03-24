@@ -13,6 +13,10 @@ the second bracket shows the mark status of the task: 'x' for marked and none fo
 the third bracket shows the time of the task. (if applicable)
 
 
+## Exit
+exit by input: bye
+
+
 ## Adding deadlines
 Adding deadlines by input: deadline 'what' /by 'when'
 

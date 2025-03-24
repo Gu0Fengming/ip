@@ -1,65 +1,65 @@
 package Whiost.Storage;
 
-import java.io.*;
-import java.util.ArrayList;
 import Whiost.Task.*;
+import Whiost.WhiostException;
 
-/**
- * Represent the function of storage including saving and loading
- */
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Storage {
-    public String filePath;
+    private final Path filePath;
 
-    /**
-     * Set the file path to where the main function indicated
-     *
-     * @param filePath the filepath of a txt file where the tasks store at
-     */
     public Storage(String filePath) {
-        this.filePath = filePath;
+        this.filePath = Paths.get(filePath);
     }
 
-    /**
-     * Load the tasks in txt file into initLst
-     *
-     * @return the tasks in txt file without splitting
-     */
-    public ArrayList<String> load() {
-        ArrayList<String> initLst = new ArrayList<>();
+    public TaskList load() throws WhiostException {
+        TaskList tasks = new TaskList();
         try {
-            File file = new File(this.filePath);
-            BufferedReader data = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = data.readLine()) != null) {
-                initLst.add(line);
+            if (!Files.exists(filePath)) return tasks;
+            List<String> lines = Files.readAllLines(filePath);
+            for (String line : lines) {
+                Task task = parseTask(line);
+                tasks.addTask(task);
             }
-            System.out.println(initLst);
-            data.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new WhiostException("Failed to load tasks: " + e.getMessage());
         }
-        return initLst;
+        return tasks;
     }
 
-    /**
-     * Save the current tasks into txt file
-     *
-     * @param task current tasks
-     */
-    public void save(Task task) {
+    public void save(TaskList tasks) throws WhiostException {
         try {
-            BufferedWriter data = new BufferedWriter(new FileWriter(this.filePath));
-            for (int i = 0; i < task.lst.size(); i++) {
-                data.write(task.typeLst.get(i));
-                data.newLine();
-                data.write(task.markLst.get(i));
-                data.newLine();
-                data.write(task.lst.get(i));
-                data.newLine();
-            }
-            data.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            Files.createDirectories(filePath.getParent());
+            List<String> lines = tasks.findTasks("").stream() // Get all tasks
+                    .map(Task::toFileFormat)
+                    .collect(Collectors.toList());
+            Files.write(filePath, lines);
+        } catch (Exception e) {
+            throw new WhiostException("Failed to save tasks: " + e.getMessage());
         }
+    }
+
+    private Task parseTask(String line) throws WhiostException {
+        String[] parts = line.split(" \\| ");
+        if (parts.length < 3) throw new WhiostException("Corrupted task data");
+
+        String type = parts[0];
+        boolean isDone = parts[1].equals("1");
+        String description = parts[2];
+
+        Task task = switch (type) {
+            case "T" -> new Todo(description);
+            case "D" -> new Deadline(description, parts.length > 3 ? parts[3] : "");
+            case "E" -> new Event(description, parts.length > 3 ? parts[3] : "", parts.length > 4 ? parts[4] : "");
+            default -> throw new WhiostException("Unknown task type: " + type);
+        };
+
+        if (isDone) task.markDone();
+        return task;
     }
 }

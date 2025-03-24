@@ -1,36 +1,36 @@
 package Whiost.Ui;
 
-/**
- * Represent Ui of chatbot, all the words says by the bot are preset here
- */
+import Whiost.Task.*;
+import java.util.List;
+
 public class Ui {
-    public String greeting;
-    public String addTask;
-    public String marked;
-    public String unmarked;
-    public String reportTask1;
-    public String reportTask2;
-    public String deleted;
+    public String getGreeting() {
+        return "Hello! I'm Whiost\nWhat can I do for you?";
+    }
 
-    public String finded;
+    public String getGoodbyeMessage() {
+        return "Goodbye! Hope to see you again soon!";
+    }
 
-    public String remind;
-    public String[] monthTrans;
+    public String getAddTaskMessage(Task task, int totalTasks) {
+        return String.format(
+                "Got it. I've added this task:\n  %s\nNow you have %d tasks in the list.",
+                task, totalTasks
+        );
+    }
 
-    /**
-     * Initializing all the words that could be said by chatbot
-     */
-    public Ui() {
-        this.greeting = "Hello! I'm Whiost\nWhat can I do for you?\n";
-        this.addTask = "Got it. I've added this task:";
-        this.marked = "Nice! I've marked this task as done:";
-        this.unmarked = "OK, I've marked this task as not done yet:";
-        this.reportTask1 = "Now you have ";
-        this.reportTask2 = " tasks in the list.";
-        this.deleted = "Noted. I've removed this task:";
-        this.finded = "Here are the matching tasks in your list:";
-        this.remind = "Here's upcoming deadlines: \n";
+    public String getDeleteMessage(Task task, int remainingTasks) {
+        return String.format(
+                "Noted. I've removed this task:\n  %s\nNow you have %d tasks in the list.",
+                task, remainingTasks
+        );
+    }
 
-        this.monthTrans = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    public String showError(String message) {
+        return "OOPS!!! " + message;
+    }
+
+    public String showReminders(TaskList tasks) {
+        return "Reminders:\n" + tasks.formatTaskList();
     }
 }

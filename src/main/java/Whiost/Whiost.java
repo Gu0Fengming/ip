@@ -1,179 +1,162 @@
 package Whiost;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Scanner;
-import Whiost.Ui.*;
+import Whiost.Command.*;
 import Whiost.Task.*;
 import Whiost.Storage.*;
-import Whiost.InputCommand.*;
-import Whiost.WhiostError.*;
+import Whiost.Ui.*;
+import java.util.List;
 
-/**
- * Represents the chatbot itself, initialize and run
- */
 public class Whiost {
-    public Ui ui;
-    public Storage storage;
-    public Task task;
-    public WhiostError error;
+    private final Ui ui = new Ui();
+    private final Storage storage;
+    private final TaskList tasks;
 
-    /**
-     * Initialize chatbot Ui, Storage, Task and Errors
-     *
-     * @param filePath the filepath of a txt file where the tasks store at
-     */
     public Whiost(String filePath) {
-        this.ui = new Ui();
         this.storage = new Storage(filePath);
-        this.task = new Task(this.storage.load());
-        this.error = new WhiostError();
+        this.tasks = loadTasks();
     }
 
-    public String greeting(){
-        StringBuilder fin = new StringBuilder();
-        fin.append(this.ui.greeting);
-        if (this.task.typeLst.size() != 0) {
-            fin.append(this.ui.remind);
-            for (int i = 0; i < this.task.typeLst.size(); i++){
-                if (Objects.equals(this.task.typeLst.get(i), "[D]")) {
-                    fin.append(this.task.lst.get(i) + "\n");
-                }
-            }
+    private TaskList loadTasks() {
+        try {
+            return storage.load();
+        } catch (WhiostException e) {
+            System.out.println(e.getMessage());
+            return new TaskList();
         }
-        return fin.toString();
     }
 
-    /**
-     * Run the chatbot and Looping until exit
-     */
-    public String run(String inputLine) {
-            int x = 0;
-            InputCommand inp = new InputCommand(inputLine);
-            int num = -1;
-            for (int i = 0; i < inp.response.length; i++) {
-                if (inp.response[i] == 1) {
-                    num = i;
-                    break;
-                }
-            }
-            if (num == 0) { // empty description
-                return this.error.showError(1);
-            } else if (num == 1){
-                x = 1;
-                assert x == 0;
-                return "0";
-            } else if (num == 2) { // list
-                if (this.task.lst.size() == 0) {
-                    return this.error.showError(3);
-                }
-                StringBuilder fin = new StringBuilder();
-                for (int i = 0; i < this.task.lst.size(); i++) {
-                    fin.append((i + 1)).append(".").append(this.task.typeLst.get(i)).append(this.task.markLst.get(i)).append(" ").append(this.task.lst.get(i)).append("\n");
-                }
-                return fin.toString();
-            } else if (num == 3) { // todo
-                StringBuilder fin = new StringBuilder();
-                fin.append(this.ui.addTask + "\n");
-                this.task.typeLst.add("[T]");
-                this.task.markLst.add("[ ]");
-                this.task.lst.add(inp.name);
-                fin.append("  " + "[T]" + "[ ]" + " " + inp.name + "\n");
-                fin.append(this.ui.reportTask1 + this.task.lst.size() + this.ui.reportTask2);
-                this.storage.save(this.task);
-                return fin.toString();
-            } else if (num == 4) { // deadline
-                StringBuilder fin = new StringBuilder();
-                fin.append(this.ui.addTask + "\n");
-                this.task.typeLst.add("[D]");
-                this.task.markLst.add("[ ]");
-                int pos = inp.target;
-                if (inp.timeChecker == 1) {
-                    this.task.lst.add(inp.name + "(by " + this.ui.monthTrans[Integer.parseInt(inp.month) - 1] + " " + inp.date + ", " + inp.year + ")");
-                    fin.append("  " + "[D]" + "[ ]" + " " + inp.name + "(by " + this.ui.monthTrans[Integer.parseInt(inp.month) - 1] + " " + inp.date + ", " + inp.year + ")" + "\n");
-                } else {
-                    this.task.lst.add(inputLine.substring(9, pos) + "(" + inputLine.substring(pos + 1) + ")");
-                    fin.append("  " + "[D]" + "[ ]" + " " + inp.name + "(" + inp.time + ")" + "\n");
-                }
-                fin.append(this.ui.reportTask1 + this.task.lst.size() + this.ui.reportTask2);
-                this.storage.save(this.task);
-                return fin.toString();
-            } else if (num == 5) { // event
-                StringBuilder fin = new StringBuilder();
-                fin.append(this.ui.addTask + "\n");
-                this.task.typeLst.add("[E]");
-                this.task.markLst.add("[ ]");
-                int pos1 = inp.target1;
-                int pos2 = inp.target2;
-                this.task.lst.add(inp.name + "(from:" + inp.startTime + " to:" + inp.endTime + ")");
-                fin.append("  " + "[E]" + "[ ]" + inp.name + "(from:" + inp.startTime + " to:" + inp.endTime + ")" + "\n");
-                fin.append(this.ui.reportTask1 + this.task.lst.size() + this.ui.reportTask2);
-                this.storage.save(this.task);
-                return fin.toString();
-            } else if (num == 6) { // mark
-                int pos = inp.target;
-                if (pos >= this.task.lst.size()) {
-                    return this.error.showError(2);
-                }
-                StringBuilder fin = new StringBuilder();
-                fin.append(this.ui.marked + "\n");
-                this.task.markLst.set(pos, "[X]");
-                fin.append("  " + this.task.typeLst.get(pos) + this.task.markLst.get(pos) + " " + this.task.lst.get(pos));
-                this.storage.save(this.task);
-                return fin.toString();
-            } else if (num == 7) { // unmark
-                int pos = inp.target;
-                if (pos >= this.task.lst.size()) {
-                    return this.error.showError(2);
-                }
-                StringBuilder fin = new StringBuilder();
-                fin.append(this.ui.unmarked + "\n");
-                this.task.markLst.set(pos, "[ ]");
-                fin.append("  " + this.task.typeLst.get(pos) + this.task.markLst.get(pos) + " " + this.task.lst.get(pos));
-                this.storage.save(this.task);
-                return fin.toString();
-            } else if (num == 8) { // delete
-                int pos = inp.target;
-                if (pos >= this.task.lst.size()) {
-                    return this.error.showError(2);
-                }
-                StringBuilder fin = new StringBuilder();
-                fin.append(this.ui.deleted + "\n");
-                fin.append("  " + this.task.typeLst.get(pos) + this.task.markLst.get(pos) + this.task.lst.get(pos) + "\n");
-                this.task.lst.remove(pos);
-                this.task.markLst.remove(pos);
-                this.task.typeLst.remove(pos);
-                fin.append(this.ui.reportTask1 + this.task.lst.size() + this.ui.reportTask2);
-                this.storage.save(this.task);
-                return fin.toString();
-            } else if (num == 9) { //find
-                ArrayList<Integer> finded = new ArrayList<>();
-                for (int i = 0; i < this.task.lst.size(); i++) {
-                    String cur = this.task.lst.get(i);
-                    for (int j = 0; j < cur.length() - inp.name.length() + 1; j++){
-                        if (Objects.equals(inp.name, cur.substring(j, j + inp.name.length()))){
-                            finded.add(i);
-                            break;
-                        }
-                    }
-                }
-                if (finded.size() == 0){
-                    return this.error.showError(4);
-                } else {
-                    StringBuilder fin = new StringBuilder();
-                    fin.append(this.ui.finded + "\n");
-                    for (int i = 0; i < finded.size(); i++) {
-                        fin.append((i + 1) + "." + this.task.typeLst.get(finded.get(i)) + this.task.markLst.get(finded.get(i)) + " " + this.task.lst.get(finded.get(i)) + "\n");
-                    }
-                    return fin.toString();
-                }
-
-            } else {
-                return this.error.showError(0);
-            }
+    public String getGreeting() {
+        return ui.getGreeting() + (tasks.isEmpty() ? "" : "\n" + ui.showReminders(tasks));
     }
 
-    public static void main(String[] args) {
-        System.out.println("programme running");
+    public String handleInput(String input) {
+        try {
+            Command command = CommandParser.parse(input);
+            return executeCommand(command);
+        } catch (WhiostException e) {
+            return ui.showError(e.getMessage());
+        }
+    }
+
+    private String executeCommand(Command command) throws WhiostException {
+        return switch (command.getType()) {
+            case BYE -> handleBye();
+            case LIST -> handleList();
+            case TODO -> handleTodo(command.getArgs());
+            case DEADLINE -> handleDeadline(command.getArgs());
+            case EVENT -> handleEvent(command.getArgs());
+            case MARK -> handleMark(command.getArgs());
+            case UNMARK -> handleUnmark(command.getArgs());
+            case DELETE -> handleDelete(command.getArgs());
+            case FIND -> handleFind(command.getArgs());
+            default -> throw new WhiostException("Unknown command");
+        };
+    }
+
+    // Command Handlers
+    private String handleBye() {
+        try {
+            storage.save(tasks);
+            return ui.getGoodbyeMessage();
+        } catch (WhiostException e) {
+            return ui.showError("Failed to save tasks: " + e.getMessage());
+        }
+    }
+
+    private String handleList() {
+        if (tasks.isEmpty()) {
+            return ui.showError("There are no tasks in your list");
+        }
+        return "Here are your tasks:\n" + tasks.formatTaskList();
+    }
+
+    private String handleTodo(String[] args) throws WhiostException {
+        if (args.length < 1 || args[0].isEmpty()) {
+            throw new WhiostException("Todo description cannot be empty");
+        }
+        Task task = new Todo(args[0]);
+        tasks.addTask(task);
+        return ui.getAddTaskMessage(task, tasks.size());
+    }
+
+    private String handleDeadline(String[] args) throws WhiostException {
+        if (args.length < 2 || args[0].isEmpty() || args[1].isEmpty()) {
+            throw new WhiostException("Invalid deadline format. Use: deadline <description> /by <time>");
+        }
+        Task task = new Deadline(args[0], args[1]);
+        tasks.addTask(task);
+        return ui.getAddTaskMessage(task, tasks.size());
+    }
+
+    private String handleEvent(String[] args) throws WhiostException {
+        if (args.length < 3 || args[0].isEmpty() || args[1].isEmpty() || args[2].isEmpty()) {
+            throw new WhiostException("Invalid event format. Use: event <description> /from <time> /to <time>");
+        }
+        Task task = new Event(args[0], args[1], args[2]);
+        tasks.addTask(task);
+        return ui.getAddTaskMessage(task, tasks.size());
+    }
+
+    private String handleMark(String[] args) throws WhiostException {
+        int index = validateAndParseIndex(args);
+        tasks.markTask(index, true);
+        return "Nice! I've marked this task as done:\n  " + tasks.getTask(index);
+    }
+
+    private String handleUnmark(String[] args) throws WhiostException {
+        int index = validateAndParseIndex(args);
+        tasks.markTask(index, false);
+        return "OK, I've unmarked this task:\n  " + tasks.getTask(index);
+    }
+
+    private String handleDelete(String[] args) throws WhiostException {
+        int index = validateAndParseIndex(args);
+        Task task = tasks.getTask(index);
+        tasks.deleteTask(index);
+        return ui.getDeleteMessage(task, tasks.size());
+    }
+
+    private String handleFind(String[] args) throws WhiostException {
+        if (args.length < 1 || args[0].isEmpty()) {
+            throw new WhiostException("Find command requires a search keyword");
+        }
+        List<Task> results = tasks.findTasks(args[0]);
+        if (results.isEmpty()) {
+            return ui.showError("No tasks found matching '" + args[0] + "'");
+        }
+        return formatSearchResults(results);
+    }
+
+    // Helper Methods
+    private int validateAndParseIndex(String[] args) throws WhiostException {
+        if (args.length < 1) {
+            throw new WhiostException("Missing task index");
+        }
+
+        try {
+            int index = Integer.parseInt(args[0]);
+            if (index < 0 || index >= tasks.size()) {
+                throw new WhiostException("Task index out of bounds");
+            }
+            return index;
+        } catch (NumberFormatException e) {
+            throw new WhiostException("Invalid task number format");
+        }
+    }
+
+    private String formatSearchResults(List<Task> results) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Here are the matching tasks:\n");
+        for (int i = 0; i < results.size(); i++) {
+            sb.append(i + 1)
+                    .append(". ")
+                    .append(results.get(i))
+                    .append("\n");
+        }
+        return sb.toString();
+    }
+
+    public Ui getUi() {
+        return ui;
     }
 }

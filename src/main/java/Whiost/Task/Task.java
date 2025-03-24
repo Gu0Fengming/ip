@@ -1,36 +1,38 @@
 package Whiost.Task;
 
-import java.util.ArrayList;
 
 /**
  * Represent current tasks created by user
  */
-public class Task {
-    public ArrayList<String> lst = new ArrayList<>();
-    public ArrayList<String> typeLst = new ArrayList<>();
-    public ArrayList<String> markLst = new ArrayList<>();
-    public ArrayList<String> initLst;
+public abstract class Task {
+    protected String description;
+    protected boolean isDone;
 
-    /**
-     * Initializing tasks
-     *
-     * @param initLst provided by load() in Storage, contains tasks stored in txt file
-     */
-    public Task(ArrayList<String> initLst) {
-        this.initLst = initLst;
-        int state = 0;
-        for (int i = 0; i < this.initLst.size(); i++) {
-            String line = this.initLst.get(i);
-            if (state == 0) {
-                state = 1;
-                this.typeLst.add(line);
-            } else if (state == 1) {
-                state = 2;
-                this.markLst.add(line);
-            } else {
-                state = 0;
-                this.lst.add(line);
-            }
-        }
+    public Task(String description) {
+        this.description = description;
+        this.isDone = false;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void markDone() {
+        isDone = true;
+    }
+
+    public void unmarkDone() {
+        isDone = false;
+    }
+
+    public abstract String toFileFormat();
+
+    public String getStatusIcon() {
+        return isDone ? "[X]" : "[ ]";
+    }
+
+    @Override
+    public String toString() {
+        return getStatusIcon() + " " + description;
     }
 }
